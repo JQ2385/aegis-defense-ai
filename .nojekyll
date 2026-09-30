@@ -1,0 +1,60 @@
+# AEGIS Defense Control System
+
+AEGIS is a self-contained defense dashboard with AI-style tactical intelligence, live advisory responses, edge inference simulation, and resilient control behavior. This project is designed to run as a static web app and can be deployed to GitHub Pages or any static hosting platform.
+
+## Features
+
+- Adaptive defense simulation
+- Control mode switching: Local, Guarded, Isolated, Safe Hold
+- Edge AI layer called Nexus
+- Live Vigil advisory responses
+- Threat monitoring and defense map model
+- Scenario presets for normal, heavy attack, and network degradation
+
+## Run locally
+
+Open `index.html` directly in a browser, or run a local static server:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then visit:
+
+```text
+http://localhost:8000
+```
+
+## Deploy to GitHub Pages
+
+1. Push this repo to GitHub.
+2. In the repository settings, open Pages.
+3. Select "Deploy from a branch".
+4. Choose the `main` branch and root folder `/`.
+5. Save and wait for the site to build.
+
+Your site will be available at:
+
+```text
+https://<your-username>.github.io/aegis-defense-ai/
+```
+
+## AI tech intelligence layer
+
+The app simulates an AI-powered defense layer with:
+
+- real-time advisory generation
+- local inference prioritization
+- scenario-driven risk adaptation
+- defensive policy recommendations
+- resilient control logic under degraded network conditions
+
+## Files
+
+- `index.html` — dashboard structure and UI
+- `styles.css` — visual design and layout
+- `app.js` — simulation and AI-style control logic
+
+## License
+
+This project is distributed as a demonstration interface for autonomous defense design.

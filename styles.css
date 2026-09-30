@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AEGIS — Imprinted Defense</title>
+    <meta
+      name="description"
+      content="AEGIS Defense Control System with AI-powered intelligence, resilient control loops, and adaptive protection."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-wing" aria-hidden="true"></div>
+
+    <div class="page">
+      <header>
+        <div class="mark">Æ</div>
+        <h1>AEGIS</h1>
+        <div class="tagline">Defense Control System</div>
+        <p class="offer">
+          Ranked risk defense with adaptive protection, live advisory intelligence,
+          and network-resilient control.
+        </p>
+      </header>
+
+      <div class="controls">
+        <button class="primary" onclick="runStep()">Run Simulation</button>
+        <button onclick="toggleAuto()">Auto <span id="auto-label">Off</span></button>
+        <button class="control-btn" onclick="cycleControlMode()">Control Mode</button>
+        <button onclick="runDemo()">Demo</button>
+      </div>
+
+      <div class="controls scenario-bar" style="margin-top: 0.35rem;">
+        <button type="button" onclick="loadScenario('normal')" title="Steady baseline">Normal</button>
+        <button type="button" onclick="loadScenario('attack')" title="Elevated pressure">Heavy attack</button>
+        <button type="button" onclick="loadScenario('network')" title="Network stress">Network drop</button>
+      </div>
+
+      <div class="clock" id="clock">t = 0.0s</div>
+
+      <div class="banner crit" id="alert-box">
+        <strong>Circuit Breaker</strong>&nbsp;<span id="alert-detail"></span>
+      </div>
+      <div class="banner control" id="control-box">
+        <strong>Control Center</strong>&nbsp;<span id="control-detail"></span>
+      </div>
+      <div class="banner sig" id="sig-box">
+        <strong>Signature</strong>&nbsp;<span id="sig-detail"></span>
+      </div>
+      <div class="banner armor" id="armor-box">
+        <strong>Armor</strong>&nbsp;<span id="armor-detail"></span>
+      </div>
+      <div class="banner entangle" id="entangle-box">
+        <strong>Entangled Defense</strong>&nbsp;<span id="entangle-detail"></span>
+      </div>
+
+      <div class="control-center">
+        <h2>Control Center</h2>
+        <div class="subhead">Self-contained · Local control loops · Network-resilient operation</div>
+        <div class="cc-grid">
+          <div class="cc-card">
+            <div class="cc-label">Control Mode</div>
+            <div class="cc-value" id="cc-mode">Local</div>
+            <div class="cc-note" id="cc-mode-note">Fully onboard</div>
+          </div>
+          <div class="cc-card">
+            <div class="cc-label">Loop Health</div>
+            <div class="cc-value" id="cc-health">100%</div>
+            <div class="cc-note">Sense → Decide → Act</div>
+          </div>
+          <div class="cc-card">
+            <div class="cc-label">Network Reliance</div>
+            <div class="cc-value" id="cc-net">None</div>
+            <div class="cc-note">Operates offline</div>
+          </div>
+        </div>
+
+        <div class="cc-modes">
+          <span class="mode-chip active" data-mode="local" onclick="setControlMode('local')">Local</span>
+          <span class="mode-chip" data-mode="guarded" onclick="setControlMode('guarded')">Guarded</span>
+          <span class="mode-chip" data-mode="isolated" onclick="setControlMode('isolated')">Isolated</span>
+          <span class="mode-chip" data-mode="safe" onclick="setControlMode('safe')">Safe Hold</span>
+        </div>
+      </div>
+
+      <div class="control-center vigil-panel">
+        <h2 style="color:#6d28d9;">Vigil</h2>
+        <div class="subhead">Live robotic advisory · Spoken answers from system state</div>
+        <div class="cc-grid">
+          <div class="cc-card">
+            <div class="cc-label">Advisory Status</div>
+            <div class="cc-value" id="vigil-status" style="color:#7c3aed;">Online</div>
+            <div class="cc-note">Ready for questions</div>
+          </div>
+          <div class="cc-card">
+            <div class="cc-label">Recommendation</div>
+            <div class="cc-value" id="vigil-rec" style="color:#7c3aed;font-size:1.05rem;">—</div>
+            <div class="cc-note" id="vigil-reason">Based on current defense state</div>
+          </div>
+          <div class="cc-card">
+            <div class="cc-label">Plan Horizon</div>
+            <div class="cc-value" id="vigil-horizon" style="color:#7c3aed;">1 step</div>
+            <div class="cc-note">Suggested timeframe</div>
+          </div>
+        </div>
+
+        <div class="qs" style="margin-top:1.1rem;margin-bottom:0.85rem;">
+          <button onclick="vigilLive('status')">Status</button>
+          <button onclick="vigilLive('risk')">Risk</button>
+          <button onclick="vigilLive('control')">Control</button>
+          <button onclick="vigilLive('armor')">Armor</button>
+          <button onclick="vigilLive('signature')">Signature</button>
+          <button onclick="vigilLive('advice')">Advice</button>
+        </div>
+
+        <div style="text-align:center;display:flex;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
+          <button class="primary" id="vigil-live-btn" onclick="vigilLive('advice')" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);min-width:160px;">
+            ● Live Response
+          </button>
+          <button type="button" id="vigil-apply-btn" onclick="applyVigilAdvice()" style="background:#fff;border:1px solid #ddd6fe;color:#6d28d9;min-width:140px;">
+            Apply advice
+          </button>
+        </div>
+
+        <div class="reply" style="margin-top:1rem;">
+          <div class="who">VIGIL · LIVE</div>
+          <div id="vigil-live-text">Press Live Response or a question. Vigil answers by voice from live state.</div>
+        </div>
+      </div>
+
+      <div class="core-card nexus-panel">
+        <div style="text-align:center;margin-bottom:0.75rem;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:#5b21b6;">Nexus</div>
+          <div style="font-size:0.8rem;color:var(--soft);margin-top:0.2rem;">Edge AI layer · Local inference priority · Cloud optional</div>
+        </div>
+
+        <div class="cc-grid" style="grid-template-columns:repeat(3,1fr);gap:0.75rem;">
+          <div class="cc-card" style="background:#faf5ff;">
+            <div class="cc-label">Edge Mode</div>
+            <div class="cc-value" id="nexus-mode" style="color:#6d28d9;font-size:1.1rem;">Local-first</div>
+            <div class="cc-note">On-device priority</div>
+          </div>
+          <div class="cc-card" style="background:#faf5ff;">
+            <div class="cc-label">Inference Path</div>
+            <div class="cc-value" id="nexus-path" style="color:#6d28d9;font-size:1.05rem;">Onboard</div>
+            <div class="cc-note" id="nexus-path-note">No cloud required</div>
+          </div>
+          <div class="cc-card" style="background:#faf5ff;">
+            <div class="cc-label">Link Health</div>
+            <div class="cc-value" id="nexus-link" style="color:#6d28d9;font-size:1.1rem;">Stable</div>
+            <div class="cc-note">Edge ↔ control</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:0.9rem;display:flex;justify-content:center;gap:0.45rem;flex-wrap:wrap;">
+          <button type="button" onclick="setNexusMode('local')" class="mode-chip active" id="nx-local">Local-first</button>
+          <button type="button" onclick="setNexusMode('edge')" class="mode-chip" id="nx-edge">Edge assist</button>
+          <button type="button" onclick="setNexusMode('hybrid')" class="mode-chip" id="nx-hybrid">Hybrid</button>
+          <button type="button" onclick="nexusSpeak()" class="primary" style="background:linear-gradient(135deg,#6d28d9,#8b5cf6);font-size:0.78rem;padding:0.45rem 1rem;">● Ask Nexus</button>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">Terminal Risk</div>
+          <div class="value" id="m-risk" style="color:var(--safe)">—</div>
+          <div class="sub">After protection</div>
+        </div>
+        <div class="metric">
+          <div class="label">Unbreakable</div>
+          <div class="value" id="m-unbreak" style="color:var(--mig)">—</div>
+          <div class="sub">Index</div>
+        </div>
+        <div class="metric">
+          <div class="label">Signature</div>
+          <div class="value" id="m-sig" style="color:var(--accent)">—</div>
+          <div class="sub">Strength</div>
+        </div>
+        <div class="metric">
+          <div class="label">Entanglement</div>
+          <div class="value" id="m-ent" style="color:var(--entangle)">—</div>
+          <div class="sub">Field strength</div>
+        </div>
+      </div>
+
+      <div class="ask">
+        <h2>Ask AEGIS</h2>
+        <div class="hint">Spoken and written answers from the live defense state.</div>
+        <div class="qs">
+          <button onclick="ask('status')">Status</button>
+          <button onclick="ask('control')">Control center</button>
+          <button onclick="ask('risk')">Terminal risk</button>
+          <button onclick="ask('signature')">Signature</button>
+          <button onclick="ask('armor')">Armor</button>
+          <button onclick="ask('entangle')">Entanglement</button>
+          <button onclick="ask('network')">Network resilience</button>
+          <button onclick="vigilLive('advice')">Advisory</button>
+          <button onclick="ask('what')">What do you offer?</button>
+        </div>
+
+        <button class="speak-main" onclick="ask('status')">
+          <span class="pulse"></span> Speak Current Status
+        </button>
+
+        <div class="reply">
+          <div class="who">AEGIS</div>
+          <div id="answer-text">Press a question or speak. I answer from live state.</div>
+        </div>
+      </div>
+
+      <div class="map">
+        <h2>Defense Map</h2>
+        <div id="node-list"></div>
+      </div>
+
+      <div class="core">
+        <div class="core-card">
+          <h3>Core</h3>
+          <div class="stat"><span>Threat classification</span><span id="core-class">Stable</span></div>
+          <div class="stat"><span>Protection posture</span><span id="core-posture">Adaptive</span></div>
+          <div class="stat"><span>Last signal</span><span id="core-signal">Nominal</span></div>
+          <div class="stat"><span>AI response</span><span id="core-ai">Locked</span></div>
+        </div>
+
+        <div class="core-card">
+          <h3>Intelligence</h3>
+          <div class="stat"><span>System tempo</span><span id="int-tempo">Smooth</span></div>
+          <div class="stat"><span>Priority route</span><span id="int-priority">Local inference</span></div>
+          <div class="stat"><span>Edge sync</span><span id="int-sync">Stable</span></div>
+          <div class="stat"><span>Recommended action</span><span id="int-action">Monitor</span></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <h3>AI Defense Intelligence</h3>
+        <p>
+          Built for resilient autonomous response: one control layer for defense posture,
+          one intelligence layer for tactical response, and one local edge signal path for continuity under pressure.
+        </p>
+        <div class="ideas">
+          <span class="idea">Adaptive posture</span>
+          <span class="idea">Edge inference</span>
+          <span class="idea">Circuit resilience</span>
+          <span class="idea">Signal encryption</span>
+          <span class="idea">Autonomous defense</span>
+        </div>
+        <div class="log" id="event-log"></div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
